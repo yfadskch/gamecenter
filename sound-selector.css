@@ -1,0 +1,90 @@
+.sound-selector {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid #444;
+}
+
+.sound-selector label {
+    color: gold;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.sound-selector select {
+    background: #333;
+    color: #fff;
+    border: 1px solid #444;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    outline: none;
+    width: 120px;
+}
+
+.sound-selector select:hover {
+    background: #444;
+}
+
+.sound-selector select:focus {
+    border-color: gold;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+.audio-toggle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.toggle-btn.active {
+    color: gold;
+}
+
+@media (max-width: 600px) {
+    .sound-selector {
+        bottom: 10px;
+        right: 10px;
+        padding: 8px;
+    }
+    
+    .sound-selector label {
+        font-size: 0.8rem;
+    }
+    
+    .sound-selector select {
+        width: 100px;
+        font-size: 0.8rem;
+    }
+    
+    .toggle-btn {
+        font-size: 1rem;
+    }
+}

@@ -1,0 +1,100 @@
+/* 音频控制面板 */
+.audio-controls {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid #444;
+}
+
+.audio-controls h4 {
+    color: gold;
+    margin: 0 0 10px 0;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.volume-control label {
+    color: #fff;
+    font-size: 0.9rem;
+    min-width: 100px;
+}
+
+.volume-slider {
+    -webkit-appearance: none;
+    width: 100px;
+    height: 4px;
+    background: #444;
+    border-radius: 2px;
+    outline: none;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 15px;
+    height: 15px;
+    background: gold;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.audio-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.toggle-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.toggle-btn.active {
+    color: gold;
+}
+
+@media (max-width: 600px) {
+    .audio-controls {
+        bottom: 10px;
+        right: 10px;
+        padding: 10px;
+    }
+    
+    .volume-slider {
+        width: 80px;
+    }
+    
+    .volume-control label {
+        min-width: 80px;
+        font-size: 0.8rem;
+    }
+}

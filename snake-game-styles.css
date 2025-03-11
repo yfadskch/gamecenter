@@ -1,0 +1,102 @@
+/* 赔率表模态框样式 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    overflow: auto;
+}
+
+.modal.show {
+    display: block;
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background-color: #2a2a3a;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 15px;
+    max-width: 600px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), 0 0 30px rgba(187, 134, 252, 0.3);
+    border: 2px solid #444;
+    color: #fff;
+    position: relative;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-btn:hover {
+    color: #bb86fc;
+}
+
+.paytable-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.paytable-item {
+    background-color: #333;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.paytable-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.paytable-item .symbol {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.paytable-item .payout {
+    color: gold;
+    font-weight: bold;
+}
+
+.paytable-item.special {
+    background: linear-gradient(135deg, #333, #444);
+    border: 1px solid #bb86fc;
+}
+
+.special-rules {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #333;
+    border-radius: 8px;
+    border-left: 3px solid #bb86fc;
+}
+
+.special-rules h3 {
+    color: #bb86fc;
+    margin-bottom: 10px;
+}
+
+.special-rules p {
+    margin: 5px 0;
+    color: #ddd;
+}

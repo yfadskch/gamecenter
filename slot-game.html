@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>老虎机游戏</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+        .account-section {
+            text-align: right;
+            font-size: 14px;
+        }
+        .login-link {
+            color: #bb86fc;
+            text-decoration: none;
+        }
+        .login-link:hover {
+            text-decoration: underline;
+        }
+        .account-info {
+            background-color: #2a2a2a;
+            padding: 8px 12px;
+            border-radius: 4px;
+            display: none;
+        }
+        #logout-btn {
+            margin-left: 10px;
+            color: #ff5555;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .slot-machine {
+            display: flex;
+            justify-content: center;
+            background-color: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .reel {
+            width: 100px;
+            height: 150px;
+            margin: 0 10px;
+            background-color: #333;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+        .symbols {
+            position: absolute;
+            width: 100%;
+            transition: top 3s cubic-bezier(0.21, 0.53, 0.29, 0.99);
+        }
+        .symbol {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+            font-size: 50px;
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #bb86fc;
+            border: none;
+            border-radius: 5px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #a370f7;
+        }
+        button:disabled {
+            background-color: #555;
+            color: #888;
+            cursor: not-allowed;
+        }
+        .message-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-container">
+            <h1>老虎机游戏</h1>
+            <div class="account-section">
+                <div id="login-link" class="login-link">
+                    <a href="login.html">登录/注册</a>
+                </div>
+                <div id="user-info" class="account-info" style="display: none;">
+                    用户: <span id="user-name"></span> | 
+                    余额: <span id="user-balance">0</span> 金币
+                    <a href="#" id="logout-btn">登出</a>
+                </div>
+            </div>
+        </div>
+        
+        <div id="loading" class="loading">
+            正在加载游戏...
+        </div>
+        
+        <div id="game-content" style="display: none;">
+            <!-- 游戏内容将从index.html加载 -->
+        </div>
+    </div>
+    
+    <script src="client-socket.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化WebSocket连接
+            initWebSocket();
+            
+            // 检查登录状态
+            setTimeout(checkLoginStatus, 1000);
+            
+            // 登出按钮事件
+            document.getElementById('logout-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                isLoggedIn = false;
+                userBalance = 0;
+                updateUserInfoUI();
+                window.location.href = 'login.html';
+            });
+        });
+        
+        // 检查登录状态
+        function checkLoginStatus() {
+            // 无论是否登录，都显示游戏内容
+            loadGameContent();
+            
+            // 更新用户信息UI
+            updateUserInfoUI();
+            
+            // 如果未登录，显示提示但不强制跳转
+            if (!isLoggedIn) {
+                const gameContent = document.getElementById('game-content');
+                if (gameContent) {
+                    gameContent.innerHTML = '<div style="text-align: center; padding: 20px;">' +
+                        '<h2>请先登录</h2>' +
+                        '<p>您需要登录才能玩老虎机游戏</p>' +
+                        '<a href="login.html" class="play-button" style="display: inline-block; width: auto; padding: 10px 20px; margin-top: 10px;">去登录</a>' +
+                        '</div>';
+                }
+            }
+        }
+        
+        // 更新用户信息UI
+        function updateUserInfoUI() {
+            const loginLink = document.getElementById('login-link');
+            const userInfo = document.getElementById('user-info');
+            const userName = document.getElementById('user-name');
+            const userBalanceEl = document.getElementById('user-balance');
+            
+            if (isLoggedIn) {
+                // 显示用户信息，隐藏登录链接
+                if (loginLink) loginLink.style.display = 'none';
+                if (userInfo) userInfo.style.display = 'block';
+                if (userName) userName.textContent = username || '用户';
+                if (userBalanceEl) userBalanceEl.textContent = userBalance;
+            } else {
+                // 显示登录链接，隐藏用户信息
+                if (loginLink) loginLink.style.display = 'block';
+                if (userInfo) userInfo.style.display = 'none';
+            }
+        }
+        
+        // 加载游戏内容
+        function loadGameContent() {
+            // 显示游戏内容，隐藏加载提示
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('game-content').style.display = 'block';
+            
+            // 加载游戏脚本
+            const scriptElement = document.createElement('script');
+            scriptElement.src = 'script-en.js';
+            document.body.appendChild(scriptElement);
+            
+            // 更新用户信息UI
+            updateUserInfoUI();
+        }
+        
+        // 重写handleServerMessage函数，添加对登录响应的处理
+        const originalHandleServerMessage = handleServerMessage;
+        handleServerMessage = function(message) {
+            // 调用原始处理函数
+            originalHandleServerMessage(message);
+            
+            // 处理登录和用户数据响应
+            switch(message.type) {
+                case 'loginResponse':
+                    if (message.success) {
+                        isLoggedIn = true;
+                        updateUserInfoUI();
+                        // 登录成功后加载游戏内容
+                        loadGameContent();
+                    }
+                    break;
+                    
+                case 'playerData':
+                    if (message.data && message.data.balance !== undefined) {
+                        userBalance = message.data.balance;
+                        updateUserInfoUI();
+                    }
+                    break;
+                    
+                case 'balanceUpdate':
+                case 'balanceResponse':
+                    if (message.balance !== undefined) {
+                        userBalance = message.balance;
+                        updateUserInfoUI();
+                    }
+                    break;
+            }
+        };
+    </script>
+</body>
+</html>

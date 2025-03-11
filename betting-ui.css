@@ -1,0 +1,126 @@
+/* 下注界面样式 */
+.betting-ui {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 15px 0;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    border: 1px solid #444;
+}
+
+.betting-title {
+    font-size: 1.2rem;
+    color: gold;
+    margin-bottom: 10px;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+.betting-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    justify-content: center;
+}
+
+.bet-amount {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 5px 15px;
+    border-radius: 5px;
+    min-width: 80px;
+    text-align: center;
+    border: 1px solid #555;
+}
+
+.bet-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(to bottom, #444, #333);
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.bet-btn:hover {
+    transform: scale(1.1);
+    background: linear-gradient(to bottom, #555, #444);
+}
+
+.bet-btn:active {
+    transform: scale(0.95);
+}
+
+.bet-btn.min, .bet-btn.max {
+    font-size: 0.8rem;
+    width: 50px;
+    height: 30px;
+    border-radius: 15px;
+}
+
+.bet-btn.min {
+    background: linear-gradient(to bottom, #ff4500, #d13800);
+}
+
+.bet-btn.max {
+    background: linear-gradient(to bottom, #4CAF50, #388E3C);
+}
+
+.bet-slider-container {
+    width: 100%;
+    margin-top: 15px;
+    padding: 0 20px;
+}
+
+.bet-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    background: #333;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.bet-slider:hover {
+    opacity: 1;
+}
+
+.bet-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: gold;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.8);
+}
+
+.bet-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: gold;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.8);
+}
+
+/* 响应式调整 */
+@media (max-width: 600px) {
+    .betting-controls {
+        flex-wrap: wrap;
+    }
+}

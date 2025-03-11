@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户登录 - 老虎机游戏</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            cursor: pointer;
+        }
+        .tab.active {
+            background-color: #bb86fc;
+            color: #000;
+        }
+        .form-container {
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #bb86fc;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            background-color: #333;
+            border: 1px solid #555;
+            border-radius: 4px;
+            color: #fff;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #bb86fc;
+            border: none;
+            border-radius: 4px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #a370f7;
+        }
+        .message-container {
+            margin-top: 20px;
+        }
+        .message {
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #333;
+            border-radius: 4px;
+            animation: fadeIn 0.3s ease-in;
+        }
+        .message.fade-out {
+            animation: fadeOut 0.5s ease-out;
+            opacity: 0;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        .links {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .links a {
+            color: #bb86fc;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>老虎机游戏 - 用户账号</h1>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" id="login-tab">登录</div>
+            <div class="tab" id="register-tab">注册</div>
+        </div>
+        
+        <div class="form-container" id="login-form">
+            <div class="form-group">
+                <label for="login-username">用户名</label>
+                <input type="text" id="login-username" placeholder="请输入用户名">
+            </div>
+            <div class="form-group">
+                <label for="login-password">密码</label>
+                <input type="password" id="login-password" placeholder="请输入密码">
+            </div>
+            <button id="login-button">登录</button>
+        </div>
+        
+        <div class="form-container" id="register-form" style="display: none;">
+            <div class="form-group">
+                <label for="register-username">用户名</label>
+                <input type="text" id="register-username" placeholder="请输入用户名">
+            </div>
+            <div class="form-group">
+                <label for="register-password">密码</label>
+                <input type="password" id="register-password" placeholder="请输入密码">
+            </div>
+            <div class="form-group">
+                <label for="register-confirm-password">确认密码</label>
+                <input type="password" id="register-confirm-password" placeholder="请再次输入密码">
+            </div>
+            <button id="register-button">注册</button>
+        </div>
+        
+        <div class="message-container" id="message-container">
+            <!-- 消息将在这里动态添加 -->
+        </div>
+        
+        <div class="links">
+            <a href="index.html">返回游戏</a>
+            <a href="multiplayer-ui.html">多人游戏状态</a>
+        </div>
+    </div>
+    
+    <script src="client-socket.js"></script>
+    <script>
+        // 初始化WebSocket连接
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化WebSocket连接
+            initWebSocket();
+            
+            // 检查WebSocket连接状态
+            setTimeout(() => {
+                if (!isConnected) {
+                    showMessage('无法连接到服务器，请检查服务器是否运行');
+                }
+            }, 3000);
+            
+            // 切换标签页
+            const loginTab = document.getElementById('login-tab');
+            const registerTab = document.getElementById('register-tab');
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            
+            loginTab.addEventListener('click', function() {
+                loginTab.classList.add('active');
+                registerTab.classList.remove('active');
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+            });
+            
+            registerTab.addEventListener('click', function() {
+                registerTab.classList.add('active');
+                loginTab.classList.remove('active');
+                registerForm.style.display = 'block';
+                loginForm.style.display = 'none';
+            });
+            
+            // 注册按钮事件
+            const registerButton = document.getElementById('register-button');
+            registerButton.addEventListener('click', function() {
+                const username = document.getElementById('register-username').value;
+                const password = document.getElementById('register-password').value;
+                const confirmPassword = document.getElementById('register-confirm-password').value;
+                
+                if (!username || !password) {
+                    showMessage('用户名和密码不能为空');
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    showMessage('两次输入的密码不一致');
+                    return;
+                }
+                
+                // 发送注册请求
+                sendMessage({
+                    type: 'register',
+                    username: username,
+                    password: password
+                });
+            });
+            
+            // 登录按钮事件
+            const loginButton = document.getElementById('login-button');
+            loginButton.addEventListener('click', function() {
+                const username = document.getElementById('login-username').value;
+                const password = document.getElementById('login-password').value;
+                
+                if (!username || !password) {
+                    showMessage('用户名和密码不能为空');
+                    return;
+                }
+                
+                // 发送登录请求
+                sendMessage({
+                    type: 'login',
+                    username: username,
+                    password: password
+                });
+            });
+        });
+        
+        // 显示消息
+        function showMessage(message) {
+            // 创建消息元素
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message';
+            messageElement.textContent = message;
+            
+            // 添加到页面
+            const messageContainer = document.getElementById('message-container');
+            messageContainer.appendChild(messageElement);
+            
+            // 3秒后移除消息
+            setTimeout(() => {
+                messageElement.classList.add('fade-out');
+                setTimeout(() => {
+                    messageContainer.removeChild(messageElement);
+                }, 500);
+            }, 3000);
+        }
+        
+        // 处理从服务器接收的消息
+        const originalHandleServerMessage = handleServerMessage;
+        handleServerMessage = function(message) {
+            // 调用原始处理函数
+            originalHandleServerMessage(message);
+            
+            // 处理登录和注册响应
+            switch(message.type) {
+                case 'loginResponse':
+                    if (message.success) {
+                        showMessage('登录成功: ' + message.message);
+                        // 登录成功后跳转到游戏中心页面
+                        setTimeout(() => {
+                            window.location.href = 'game-center.html';
+                        }, 1500);
+                    } else {
+                        showMessage('登录失败: ' + message.message);
+                    }
+                    break;
+                    
+                case 'registerResponse':
+                    if (message.success) {
+                        showMessage('注册成功: ' + message.message);
+                        // 注册成功后切换到登录标签
+                        document.getElementById('login-tab').click();
+                    } else {
+                        showMessage('注册失败: ' + message.message);
+                    }
+                    break;
+            }
+        };
+    </script>
+</body>
+</html>
