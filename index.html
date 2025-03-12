@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>老虎机游戏</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>老虎机游戏</h1>
+        
+        <div class="slot-machine">
+            <div class="reels">
+                <div class="reel" id="reel1">
+                    <div class="symbol">🍒</div>
+                </div>
+                <div class="reel" id="reel2">
+                    <div class="symbol">🍋</div>
+                </div>
+                <div class="reel" id="reel3">
+                    <div class="symbol">🍊</div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <div class="balance-container">
+                    <span>余额: </span>
+                    <span id="balance">1000</span>
+                </div>
+                
+                <div class="bet-container">
+                    <button id="decrease-bet">-</button>
+                    <span>下注: </span>
+                    <span id="bet-amount">10</span>
+                    <button id="increase-bet">+</button>
+                </div>
+                
+                <button id="spin-button">旋转!</button>
+            </div>
+        </div>
+        
+        <div id="message"></div>
+        
+        <div class="instructions">
+            <h2>游戏规则</h2>
+            <p>旋转轮盘，尝试匹配相同的符号!</p>
+            <p>三个相同符号: 赢取下注金额的10倍</p>
+            <p>两个相同符号: 赢取下注金额的2倍</p>
+        </div>
+    </div>
+    
+    <audio id="background-music" loop>
+        <source src="audio/background.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="spin-sound">
+        <source src="audio/spin.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="win-sound">
+        <source src="audio/win.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script src="scores.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

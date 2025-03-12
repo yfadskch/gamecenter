@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏中心 - 排行榜</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .leaderboard-container {
+            background-color: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+        }
+        
+        .game-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #444;
+        }
+        
+        .game-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #333;
+            color: #ccc;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+        
+        .game-tab.active {
+            background-color: #ffd700;
+            color: #121212;
+            font-weight: bold;
+        }
+        
+        .score-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .score-table th, .score-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+        }
+        
+        .score-table th {
+            background-color: #1a1a1a;
+            color: #ffd700;
+        }
+        
+        .score-table tr:nth-child(even) {
+            background-color: #333;
+        }
+        
+        .score-table tr:hover {
+            background-color: #444;
+        }
+        
+        .score-table .rank {
+            width: 60px;
+            text-align: center;
+        }
+        
+        .score-table .player {
+            width: 30%;
+        }
+        
+        .score-table .score {
+            width: 20%;
+            text-align: right;
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .score-table .date {
+            width: 30%;
+            color: #999;
+        }
+        
+        .data-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        
+        .import-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-label {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .no-scores {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>游戏中心 - 排行榜</h1>
+        
+        <div class="leaderboard-container">
+            <div class="game-tabs">
+                <div class="game-tab active" data-game="slotMachine">老虎机</div>
+                <div class="game-tab" data-game="snake">贪吃蛇</div>
+            </div>
+            
+            <div id="scores-container">
+                <!-- 分数表格将通过JavaScript动态生成 -->
+            </div>
+            
+            <div class="data-controls">
+                <div class="import-container">
+                    <label for="import-file" class="file-label">导入数据</label>
+                    <input type="file" id="import-file" class="file-input" accept=".json">
+                    <span id="import-status"></span>
+                </div>
+                
+                <button id="export-button" class="export-button">导出数据</button>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h2>数据同步说明</h2>
+            <p>您可以通过以下步骤在不同设备间同步您的游戏分数：</p>
+            <ol>
+                <li>点击"导出数据"按钮下载您的分数记录JSON文件</li>
+                <li>将此文件上传到您的GitHub仓库或其他云存储服务</li>
+                <li>在其他设备上，下载该JSON文件并使用"导入数据"功能</li>
+            </ol>
+            <p>这样您就可以在不同设备间保持分数记录的一致性，也可以与朋友分享您的游戏成绩！</p>
+        </div>
+        
+        <button id="menu-button" class="menu-button">返回菜单</button>
+    </div>
+    
+    <script src="scores.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 获取DOM元素
+            const scoresContainer = document.getElementById('scores-container');
+            const gameTabs = document.querySelectorAll('.game-tab');
+            const exportButton = document.getElementById('export-button');
+            const importFile = document.getElementById('import-file');
+            const importStatus = document.getElementById('import-status');
+            const menuButton = document.getElementById('menu-button');
+            
+            // 当前选中的游戏类型
+            let currentGame = 'slotMachine';
+            
+            // 初始化页面
+            function init() {
+                // 显示初始游戏的分数
+                displayScores(currentGame);
+                
+                // 添加标签切换事件
+                gameTabs.forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        // 更新活动标签
+                        gameTabs.forEach(t => t.classList.remove('active'));
+                        tab.classList.add('active');
+                        
+                        // 更新当前游戏并显示分数
+                        currentGame = tab.dataset.game;
+                        displayScores(currentGame);
+                    });
+                });
+                
+                // 添加导出按钮事件
+                exportButton.addEventListener('click', () => {
+                    ScoreManager.downloadScores();
+                });
+                
+                // 添加导入文件事件
+                importFile.addEventListener('change', handleFileImport);
+                
+                // 添加返回菜单按钮事件
+                menuButton.addEventListener('click', () => {
+                    window.location.href = 'menu.html';
+                });
+            }
+            
+            // 显示指定游戏的分数
+            function displayScores(gameType) {
+                const scores = ScoreManager.getScores(gameType);
+                
+                // 清空容器
+                scoresContainer.innerHTML = '';
+                
+                if (scores.length === 0) {
+                    // 如果没有分数记录
+                    scoresContainer.innerHTML = '<div class="no-scores">暂无分数记录</div>';
+                    return;
+                }
+                
+                // 创建表格
+                const table = document.createElement('table');
+                table.className = 'score-table';
+                
+                // 添加表头
+                const thead = document.createElement('thead');
+                thead.innerHTML = `
+                    <tr>
+                        <th class="rank">排名</th>
+                        <th class="player">玩家</th>
+                        <th class="score">分数</th>
+                        <th class="date">日期</th>
+                    </tr>
+                `;
+                table.appendChild(thead);
+                
+                // 添加表格内容
+                const tbody = document.createElement('tbody');
+                scores.forEach((score, index) => {
+                    const row = document.createElement('tr');
+                    
+                    // 格式化日期
+                    const date = new Date(score.date);
+                    const formattedDate = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+                    
+                    row.innerHTML = `
+                        <td class="rank">${index + 1}</td>
+                        <td class="player">${score.player}</td>
+                        <td class="score">${score.score}</td>
+                        <td class="date">${formattedDate}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+                table.appendChild(tbody);
+                
+                // 添加到容器
+                scoresContainer.appendChild(table);
+            }
+            
+            // 处理文件导入
+            function handleFileImport(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const result = ScoreManager.importScores(e.target.result);
+                        if (result) {
+                            importStatus.textContent = '导入成功！';
+                            importStatus.style.color = '#4CAF50';
+                            // 刷新显示
+                            displayScores(currentGame);
+                        } else {
+                            throw new Error('导入失败');
+                        }
+                    } catch (error) {
+                        importStatus.textContent = '导入失败，文件格式错误';
+                        importStatus.style.color = '#ff4500';
+                    }
+                    
+                    // 清除文件选择
+                    event.target.value = '';
+                    
+                    // 3秒后清除状态消息
+                    setTimeout(() => {
+                        importStatus.textContent = '';
+                    }, 3000);
+                };
+                reader.readAsText(file);
+            }
+            
+            // 初始化页面
+            init();
+        });
+    </script>
+</body>
+</html>

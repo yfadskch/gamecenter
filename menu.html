@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏中心</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            margin-bottom: 30px;
+        }
+        
+        .game-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .game-category {
+            background-color: #1a1a1a;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .game-category h2 {
+            color: #ffd700;
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+        
+        .game-subcategory {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .game-card {
+            background-color: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: #fff;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
+        }
+        
+        .game-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+        
+        .game-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+        
+        .game-description {
+            font-size: 14px;
+            color: #ccc;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .total-score {
+            background-color: #2a2a2a;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .total-score-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffd700;
+            margin-left: 10px;
+        }
+        
+        @media (max-width: 600px) {
+            .game-subcategory {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>游戏中心</h1>
+        
+        <div class="total-score">
+            <span>总分数:</span>
+            <span id="total-score" class="total-score-value">0</span>
+        </div>
+        
+        <div class="game-grid">
+            <!-- 老虎机游戏 -->
+            <div class="game-category">
+                <h2>老虎机游戏</h2>
+                <div class="game-subcategory">
+                    <a href="index.html" class="game-card">
+                        <div class="game-icon">🎰</div>
+                        <div class="game-title">经典老虎机</div>
+                        <div class="game-description">传统老虎机游戏，尝试匹配相同符号赢取奖励！</div>
+                    </a>
+                    
+                    <a href="index.html?mode=high_risk" class="game-card">
+                        <div class="game-icon">💰</div>
+                        <div class="game-title">高风险模式</div>
+                        <div class="game-description">更高的赌注和奖励，适合喜欢刺激的玩家！</div>
+                    </a>
+                    
+                    <a href="index.html?mode=fruits" class="game-card">
+                        <div class="game-icon">🍓</div>
+                        <div class="game-title">水果主题</div>
+                        <div class="game-description">可爱的水果主题老虎机，轻松有趣！</div>
+                    </a>
+                    
+                    <a href="index.html?mode=lucky" class="game-card">
+                        <div class="game-icon">🍀</div>
+                        <div class="game-title">幸运模式</div>
+                        <div class="game-description">更高的中奖概率，适合初学者！</div>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 贪吃蛇游戏 -->
+            <div class="game-category">
+                <h2>贪吃蛇游戏</h2>
+                <div class="game-subcategory">
+                    <a href="snake.html" class="game-card">
+                        <div class="game-icon">🐍</div>
+                        <div class="game-title">经典贪吃蛇</div>
+                        <div class="game-description">控制蛇吃食物并成长，小心不要撞到墙壁或自己的身体！</div>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 排行榜 -->
+            <div class="game-category">
+                <h2>排行榜与数据</h2>
+                <div class="game-subcategory">
+                    <a href="leaderboard.html" class="game-card">
+                        <div class="game-icon">🏆</div>
+                        <div class="game-title">游戏排行榜</div>
+                        <div class="game-description">查看所有游戏的最高分记录，导出或导入您的游戏数据！</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2023 游戏中心 - 所有游戏仅供娱乐</p>
+        </div>
+    </div>
+    
+    <audio id="background-music" loop>
+        <source src="audio/background.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script src="scores.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const backgroundMusic = document.getElementById('background-music');
+            const totalScoreElement = document.getElementById('total-score');
+            
+            // 显示总分数
+            totalScoreElement.textContent = ScoreManager.getTotalScore();
+            
+            // 添加音乐控制
+            document.addEventListener('click', () => {
+                if (backgroundMusic.paused) {
+                    backgroundMusic.play();
+                }
+            }, { once: true });
+        });
+    </script>
+</body>
+</html>
