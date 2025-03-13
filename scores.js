@@ -9,8 +9,8 @@ const ScoreManager = {
     
     // 初始化中央分数
     initCentralScore: function() {
-        // 从localStorage获取中央分数，如果不存在则设为0
-        this.centralScore = parseInt(localStorage.getItem('centralScore')) || 0;
+        // 从localStorage获取中央分数，如果不存在则设为1000
+        this.centralScore = parseInt(localStorage.getItem('centralScore')) || 1000;
         return this.centralScore;
     },
     
